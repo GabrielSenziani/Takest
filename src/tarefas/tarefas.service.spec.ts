@@ -29,6 +29,7 @@ describe('TarefasService', () => {
     )
 
     service = module.get<TarefasService>(TarefasService);
+    vi.clearAllMocks()
   });
 
   it('should be defined', () => {
