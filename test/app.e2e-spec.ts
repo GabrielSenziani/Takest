@@ -180,7 +180,6 @@ describe('AppController (e2e)', () => {
       expect(resposta.body.message).toContain("O titulo deve ter no minimo 2 caracteres");
   })
   
-
   afterEach(async () => {
     await app.close();
   });
