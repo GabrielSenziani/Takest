@@ -118,6 +118,10 @@ describe('AppController (e2e)', () => {
     await request(app.getHttpServer())
     .delete(`/tarefas/${id}`)
     .expect(204)
+
+    await request(app.getHttpServer())
+    .get(`/tarefas/${id}`)
+    .expect(404)
   })
 
    it("DELETE /tarefas/:id deve falhar ao tentar deletar uma tarefa inexistente", async () => {
