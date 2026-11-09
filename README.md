@@ -1,4 +1,4 @@
-# Tarefas API
+# Takest (API de tarefas)
 
 API REST desenvolvida com **NestJS**, **TypeScript**, **TypeORM** e **PostgreSQL**, com o objetivo de praticar desenvolvimento backend, organização de aplicações, persistência de dados e testes automatizados.
 
