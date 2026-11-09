@@ -1,114 +1,197 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Tarefas API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST desenvolvida com **NestJS**, **TypeScript**, **TypeORM** e **PostgreSQL**, com o objetivo de praticar desenvolvimento backend, organização de aplicações, persistência de dados e testes automatizados.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Tecnologias utilizadas
 
-## Description
+- Node.js
+- NestJS
+- TypeScript
+- PostgreSQL
+- TypeORM
+- Docker e Docker Compose
+- class-validator
+- class-transformer
+- Vitest
+- Supertest
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Funcionalidades
 
-## Project setup
+A API permite realizar operações de gerenciamento de tarefas por meio de endpoints REST.
+
+| Método | Endpoint | Descrição |
+|---|---|---|
+| POST | `/tarefas` | Cadastra uma nova tarefa |
+| GET | `/tarefas` | Lista todas as tarefas |
+| GET | `/tarefas/:id` | Busca uma tarefa pelo ID |
+| PATCH | `/tarefas/:id` | Atualiza uma tarefa |
+| DELETE | `/tarefas/:id` | Realiza a exclusão lógica de uma tarefa |
+
+### Estrutura de uma tarefa
+
+| Atributo | Tipo | Descrição |
+|---|---|---|
+| `id` | number | Identificador único |
+| `titulo` | string | Título da tarefa (obrigatório) |
+| `descricao` | string | Descrição da tarefa (opcional) |
+| `status` | enum | Situação atual da tarefa |
+| `criadaEm` | Date | Data de criação |
+| `excluidaEm` | Date ou null | Data da exclusão lógica |
+
+### Status disponíveis
+
+- `nao_iniciada`
+- `em_andamento`
+- `finalizada`
+- `descartada`
+
+### Exclusão lógica
+
+A API utiliza o recurso de *Soft Delete* do TypeORM.
+
+Ao excluir uma tarefa, ela não é removida fisicamente do banco de dados. Em vez disso, a coluna `excluidaEm` recebe a data da exclusão.
+
+Tarefas excluídas deixam de aparecer nas consultas padrão da API.
+
+## Validação e tratamento de erros
+
+A aplicação utiliza DTOs com `class-validator` e `class-transformer` para validar e transformar os dados recebidos.
+
+Também possui um `ValidationPipe` global configurado com:
+
+- `whitelist`: remove propriedades que não possuem decorators de validação.
+- `forbidNonWhitelisted`: rejeita propriedades não permitidas.
+- `transform`: transforma os dados recebidos conforme as regras definidas.
+
+### Principais códigos HTTP
+
+| Código | Descrição |
+|---|---|
+| 200 | Requisição realizada com sucesso |
+| 201 | Recurso criado |
+| 204 | Recurso excluído com sucesso |
+| 400 | Dados inválidos |
+| 404 | Recurso não encontrado |
+
+## Como executar o projeto
+
+### Pré-requisitos
+
+- Node.js
+- npm
+- Docker
+- Docker Compose
+
+### 1. Clonar o repositório
 
 ```bash
-$ npm install
+git clone URL_DO_REPOSITORIO
+cd estudo-nestjs
 ```
 
-## Compile and run the project
+### 2. Instalar as dependências
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+### 3. Configurar as variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do projeto, utilizando o `.env.example` como referência.
+
+Exemplo:
+
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=seu_usuario
+DB_PASSWORD=sua_senha
+DB_NAME=tarefas_dev
+DB_SYNCHRONIZE=true
+```
+
+### 4. Iniciar o banco de dados
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker compose up -d
 ```
 
-## Deployment
+O Docker Compose iniciará o container do PostgreSQL.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 5. Executar a aplicação
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Por padrão, a aplicação estará disponível em `http://localhost:3000`.
 
-## Observability
+## Testes automatizados
 
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
+O projeto possui testes unitários e testes E2E utilizando Vitest.
 
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
+### Testes unitários
 
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
+```bash
+npm test
+```
 
-## Resources
+Os testes unitários verificam o comportamento dos Services e Controllers, utilizando mocks para isolar suas dependências.
 
-Check out a few resources that may come in handy when working with NestJS:
+### Modo de observação
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observer](https://observer.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+npm run test:watch
+```
 
-## Support
+### Cobertura de testes
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+npm run test:cov
+```
 
-## Stay in touch
+### Testes E2E
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+npm run test:e2e
+```
 
-## License
+Os testes E2E utilizam Supertest para realizar requisições HTTP à aplicação, verificando o funcionamento integrado das rotas, controllers, services e persistência de dados.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Para evitar interferência nos dados de desenvolvimento, os testes utilizam um banco PostgreSQL separado, chamado `tarefas_test`.
+
+Configure o arquivo `.env.test` utilizando o `.env.test.example` como referência.
+
+O ambiente de testes é selecionado automaticamente pelo script `test:e2e`.
+
+## Estrutura do projeto
+
+```text
+estudo-nestjs/
+├── src/
+│   ├── tarefas/
+│   │   ├── dto/
+│   │   ├── entities/
+│   │   ├── tarefas.controller.ts
+│   │   ├── tarefas.service.ts
+│   │   └── tarefas.module.ts
+│   ├── app.module.ts
+│   ├── app.controller.ts
+│   ├── app.service.ts
+│   └── main.ts
+├── test/
+│   └── app.e2e-spec.ts
+├── docker-compose.yml
+├── .env.example
+├── .env.test.example
+├── package.json
+└── vitest.config.e2e.ts
+```
+
+*Estrutura ilustrativa dos principais arquivos e diretórios.*
+
+## Objetivo do projeto
+
+Este projeto foi desenvolvido como parte do meu aprendizado em desenvolvimento backend, com foco na construção de APIs REST utilizando NestJS.
+
+Durante o desenvolvimento, foram praticados conceitos como arquitetura modular, operações CRUD, integração com banco de dados relacional, validação de dados, tratamento de exceções, Docker e testes automatizados.
